@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Desk-Mate</title>
+<meta name="description" content="Desk-Mate cuida tu postura, tus ojos y tu ambiente de estudio con una cámara y sensores de bajo costo.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23143842'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%23ffc93c'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,500..800&display=swap">
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+<header class="barra">
+  <div class="ancho barra-int">
+    <a class="marca" href="#inicio"><span class="marca-luz"></span>Desk-Mate</a>
+    <nav aria-label="Principal">
+      <a href="#probar">Pruébalo</a>
+      <a href="#sensores">Sensores</a>
+      <a href="#conectar">Circuito</a>
+      <a href="#privacidad">Privacidad</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<section class="hero" id="inicio">
+  <div class="ancho hero-int">
+    <div class="hero-texto">
+      <h1>Tu escritorio te avisa antes que tu espalda.</h1>
+      <p class="bajada">Desk-Mate une una cámara y sensores Arduino para avisarte si te encorvas, te duermes, te acercas demasiado o estudias a oscuras. Suena hasta que lo corriges.</p>
+      <div class="acciones">
+        <a class="boton" href="#probar">Probar con mi cámara</a>
+        <a class="enlace" href="#sensores">Ver cómo está hecho</a>
+      </div>
+    </div>
+    <div class="escena" id="escena" data-pose="bien">
+      <svg viewBox="0 0 520 400" role="img" aria-labelledby="escena-titulo">
+        <title id="escena-titulo">Persona sentada frente a su laptop con Desk-Mate sobre el escritorio</title>
+        <polygon class="cono" points="402,74 448,74 520,300 250,300"/>
+        <path class="lampara" d="M486 300 V120 Q486 66 440 66" fill="none"/>
+        <path class="pantalla-lamp" d="M398 78 L412 46 H446 L456 78 Z"/>
+        <path class="silla" d="M72 190 V316 H176 M124 316 V392 M88 392 H160" fill="none"/>
+        <path class="pierna" d="M120 300 H214 V388 H244" fill="none"/>
+        <g class="torso">
+          <path class="cuerpo" d="M118 304 C104 250 112 206 132 178 C150 160 174 170 180 196 C188 236 178 280 176 304 Z"/>
+          <path class="brazo" d="M154 202 C164 250 190 270 262 284" fill="none"/>
+          <g class="cabeza">
+            <path class="cuello" d="M154 180 L162 148" fill="none"/>
+            <circle class="cara" cx="172" cy="116" r="42"/>
+            <path class="pelo" d="M130 118 C126 70 184 56 208 88 C188 92 172 96 164 112 C158 124 146 132 136 136 Z"/>
+            <path class="ojo ojo-abierto" d="M194 112 v9" fill="none"/>
+            <path class="ojo ojo-cerrado" d="M187 118 q7 5 14 0" fill="none"/>
+          </g>
+        </g>
+        <path class="mesa" d="M222 300 H520 V314 H222 Z"/>
+        <path class="mesa" d="M490 314 H504 V400 H490 Z"/>
+        <path class="laptop" d="M262 296 H352 L386 206" fill="none"/>
+        <circle class="camara" cx="384" cy="206" r="5"/>
+        <g class="caja">
+          <rect x="396" y="256" width="84" height="44" rx="5"/>
+          <circle class="led verde" cx="412" cy="270" r="5"/>
+          <circle class="led amarillo" cx="429" cy="270" r="5"/>
+          <circle class="led rojo" cx="446" cy="270" r="5"/>
+          <circle class="led azul" cx="463" cy="270" r="5"/>
+          <circle class="buzzer" cx="438" cy="287" r="6"/>
+        </g>
+        <g class="ondas" fill="none"><path d="M426 246 q12 -12 24 0"/><path d="M416 234 q22 -22 44 0"/></g>
+      </svg>
+      <p class="aviso" id="escena-aviso" aria-live="polite">Buena postura. Todo en verde.</p>
+      <div class="poses" role="group" aria-label="Simular una situación">
+        <button type="button" data-pose="bien" aria-pressed="true">Bien sentado</button>
+        <button type="button" data-pose="postura" aria-pressed="false">Encorvado</button>
+        <button type="button" data-pose="dormido" aria-pressed="false">Dormido</button>
+        <button type="button" data-pose="ojos_cerrados" aria-pressed="false">Ojos cerrados</button>
+        <button type="button" data-pose="cerca" aria-pressed="false">Muy cerca</button>
+        <button type="button" data-pose="luz" aria-pressed="false">A oscuras</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="demo" id="probar">
+  <div class="ancho">
+    <h2>Pruébalo ahora con tu cámara</h2>
+    <p class="intro">Es el mismo modelo que usa el prototipo. Se ejecuta en tu navegador y el video no sale de tu equipo.</p>
+    <div class="demo-cuerpo">
+      <div class="visor">
+        <canvas id="lienzo" width="640" height="480" aria-label="Vista de la cámara con las detecciones"></canvas>
+        <div class="visor-inicio" id="visor-inicio">
+          <p id="visor-texto">Siéntate derecho, con el rostro y los hombros visibles.</p>
+          <button type="button" class="boton" id="btn-iniciar">Encender la cámara</button>
+        </div>
+        <p class="visor-alerta" id="visor-alerta" role="alert" hidden></p>
+      </div>
+      <div class="panel">
+        <p class="estado" id="estado" aria-live="polite">Cámara apagada</p>
+        <ul class="alertas" id="alertas">
+          <li data-alerta="dormido"><span>Dormido</span><b>—</b></li>
+          <li data-alerta="ojos_cerrados"><span>Ojos cerrados</span><b>—</b></li>
+          <li data-alerta="postura"><span>Mala postura</span><b>—</b></li>
+          <li data-alerta="cerca"><span>Muy cerca</span><b>—</b></li>
+          <li data-alerta="luz"><span>Poca luz</span><b>—</b></li>
+        </ul>
+        <dl class="medidas">
+          <div><dt>Distancia</dt><dd id="m-dist">—</dd></div>
+          <div><dt>Cuello</dt><dd id="m-cuello">—</dd></div>
+          <div><dt>Hombros</dt><dd id="m-hombros">—</dd></div>
+          <div><dt>Brillo</dt><dd id="m-brillo">—</dd></div>
+        </dl>
+        <label class="campo" for="distancia">Distancia real a la pantalla (cm)
+          <input id="distancia" type="number" min="30" max="120" value="60">
+        </label>
+        <div class="controles">
+          <button type="button" id="btn-calibrar" disabled>Calibrar de nuevo</button>
+          <button type="button" id="btn-sonido" disabled aria-pressed="true">Silenciar</button>
+          <button type="button" id="btn-detener" disabled>Apagar cámara</button>
+        </div>
+      </div>
+    </div>
+    <ol class="pasos">
+      <li><b>Enciende la cámara</b> y da permiso al navegador.</li>
+      <li><b>Quédate derecho 5 segundos.</b> Desk-Mate aprende tu buena postura.</li>
+      <li><b>Estudia.</b> Si algo va mal, suena. Corrige y se calla en 1 segundo.</li>
+    </ol>
+  </div>
+</section>
+
+<section id="detecta">
+  <div class="ancho">
+    <h2>Cinco situaciones que detecta</h2>
+    <div class="tabla-caja">
+      <table>
+        <thead><tr><th scope="col">Alerta</th><th scope="col">Qué observa</th><th scope="col">Suena tras</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Dormido</th><td>Cierras los ojos y la cabeza cae, o la dejas sobre la mesa</td><td>3 s</td></tr>
+          <tr><th scope="row">Ojos cerrados</th><td>Párpados cerrados de forma continua. Un parpadeo no cuenta</td><td>1,5 s</td></tr>
+          <tr><th scope="row">Mala postura</th><td>Espalda encorvada, cuerpo inclinado, cabeza ladeada o cuello doblado</td><td>3 s</td></tr>
+          <tr><th scope="row">Muy cerca</th><td>Menos de 40 cm de la pantalla, o menos del 75 % de tu distancia normal</td><td>3 s</td></tr>
+          <tr><th scope="row">Poca luz</th><td>La imagen cae por debajo del 60 % de tu brillo habitual</td><td>3 s</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="sensores" id="sensores">
+  <div class="ancho sensores-int">
+    <div>
+      <h2>Y lo que la cámara no ve, lo miden los sensores</h2>
+      <p>Un Arduino Uno lee el ambiente cada segundo y lo muestra con cuatro luces, para entender el aviso sin mirar otra pantalla.</p>
+      <ul class="luces">
+        <li><i class="punto verde"></i>Todo está en rango</li>
+        <li><i class="punto amarillo"></i>60 minutos sin pausa. Parpadea a los 120</li>
+        <li><i class="punto rojo"></i>Postura, o alerta de la cámara</li>
+        <li><i class="punto azul"></i>Luz, temperatura o humedad fuera de rango</li>
+      </ul>
+    </div>
+    <dl class="piezas">
+      <div><dt>HC-SR04</dt><dd>Distancia y presencia. Alerta bajo 40 cm</dd></div>
+      <div><dt>LDR</dt><dd>Luz ambiental y caídas bruscas</dd></div>
+      <div><dt>DHT11</dt><dd>20 a 26 °C y 40 a 60 % de humedad</dd></div>
+      <div><dt>Buzzer</dt><dd>Un sonido distinto por cada alerta de la cámara</dd></div>
+      <div><dt>S/ 71,5</dt><dd>Costo aproximado de los componentes, sin contar buzzer ni laptop</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section class="conectar" id="conectar">
+  <div class="ancho">
+    <h2>Conecta el circuito a esta página</h2>
+    <p class="intro">Si tienes el prototipo, enchúfalo por USB. Verás sus sensores aquí y el buzzer sonará con las alertas de la cámara.</p>
+    <div class="controles"><button type="button" class="boton" id="btn-arduino">Conectar Arduino</button></div>
+    <p class="estado" id="ard-estado" aria-live="polite">Sin conexión. Usa Chrome o Edge en una computadora.</p>
+    <dl class="lecturas">
+      <div><dt>Distancia</dt><dd id="a-dist">—</dd></div>
+      <div><dt>Luz (LDR)</dt><dd id="a-luz">—</dd></div>
+      <div><dt>Temperatura</dt><dd id="a-temp">—</dd></div>
+      <div><dt>Humedad</dt><dd id="a-hum">—</dd></div>
+      <div><dt>Sesión</dt><dd id="a-ses">—</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section id="privacidad">
+  <div class="ancho privacidad">
+    <h2>Tu video se queda contigo</h2>
+    <div>
+      <p>Las imágenes se analizan en tu navegador y se descartan al instante. No se graban ni se envían. Solo se guarda tu calibración, en este navegador.</p>
+      <button type="button" class="boton-sec" id="btn-borrar">Borrar mi calibración</button>
+      <p class="nota">Desk-Mate es un prototipo académico. No es un dispositivo médico.</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer><div class="ancho">Desk-Mate. Proyecto del curso Internet de las Cosas, USIL, Lima 2026.</div></footer>
+<script type="module" src="app.js"></script>
+</body>
+</html>
