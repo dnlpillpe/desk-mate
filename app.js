@@ -1,4 +1,5 @@
 import { GestorAlertas, PRIORIDAD, CODIGO, TONOS, medir, calibrar, parsearTrama } from "./detector.js";
+import { anotar, borrarTodo } from "./tablero.js";
 
 const CDN = "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.2.3";
 const $ = (id) => document.getElementById(id);
@@ -57,7 +58,9 @@ $("btn-borrar").addEventListener("click", () => {
   cal = null;
   gestor = new GestorAlertas(null);
   if (flujo) iniciarCalibracion();
-  $("btn-borrar").textContent = "Calibración borrada";
+  ultimo = null;
+  borrarTodo();
+  $("btn-borrar").textContent = "Datos borrados";
 });
 
 // ---------- Camara y modelo ----------
@@ -129,7 +132,7 @@ $("btn-iniciar").addEventListener("click", async () => {
 function detener() {
   reloj.postMessage("parar");
   flujo?.getTracks().forEach((t) => t.stop());
-  flujo = null; calibracion = null; video.srcObject = null;
+  flujo = null; calibracion = null; ultimo = null; video.srcObject = null;
   ctx.clearRect(0, 0, lienzo.width, lienzo.height);
   $("visor-inicio").hidden = false; $("btn-iniciar").hidden = false;
   $("visor-texto").textContent = "Siéntate derecho, con el rostro y los hombros visibles.";
@@ -212,10 +215,13 @@ function ciclo() {
     $("visor-alerta").hidden = true;
     pasoCalibracion(m, t);
     enviarAlerta(null);
+    ultimo = null;
     return;
   }
   const e = gestor.actualizar(m, datosArduino(), t);
   const principal = e.activas[0] ?? null;
+  for (const k of e.activas) vistas.add(k);
+  ultimo = { m, motivo: e.motivo, t: performance.now() };
   for (const li of $("alertas").children) {
     const k = li.dataset.alerta;
     const suena = e.activas.includes(k);
@@ -245,6 +251,20 @@ reloj.onmessage = () => {
     $("visor-texto").textContent = "El análisis se detuvo por un error. Vuelve a encender la cámara.";
   }
   setTimeout(() => { ocupado = false; }, 0);       // descarta ticks acumulados
+};
+
+// ---------- Registro para el tablero: una fila por segundo ----------
+let ultimo = null, finMonitoreo = 0;
+const vistas = new Set();                        // alertas que sonaron en este segundo
+const cronometro = new Worker(URL.createObjectURL(new Blob([
+  "setInterval(()=>postMessage(0),1000)"], { type: "text/javascript" })));
+cronometro.onmessage = () => {
+  const ahora = performance.now();
+  if (ahora - finMonitoreo < 500) return;        // descarta ticks acumulados
+  finMonitoreo = ahora;
+  const u = ultimo && ahora - ultimo.t < 2000 ? ultimo : null, ard = datosArduino();
+  if (u || ard) anotar(u?.m, u ? [...vistas] : [], u?.motivo, ard, u ? cal : null);
+  vistas.clear();
 };
 
 // ---------- Arduino por USB (Web Serial: Chrome o Edge de escritorio) ----------

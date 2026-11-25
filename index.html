@@ -16,6 +16,7 @@
     <a class="marca" href="#inicio"><span class="marca-luz"></span>Desk-Mate</a>
     <nav aria-label="Principal">
       <a href="#probar">Pruébalo</a>
+      <a href="#tablero">Tablero</a>
       <a href="#sensores">Sensores</a>
       <a href="#conectar">Circuito</a>
       <a href="#privacidad">Privacidad</a>
@@ -126,6 +127,47 @@
   </div>
 </section>
 
+<section class="tablero" id="tablero">
+  <div class="ancho">
+    <h2>Tablero de la sesión</h2>
+    <p class="intro">Todas las métricas de la cámara y del Arduino, una vez por segundo, con sus límites y alertas.</p>
+    <div class="t-controles">
+      <label for="t-sesion">Sesión <select id="t-sesion"></select></label>
+      <button type="button" id="t-csv">Descargar CSV</button>
+      <button type="button" id="t-imprimir">Imprimir o guardar PDF</button>
+      <label class="t-importar" for="t-archivo">Importar CSV de Python<input type="file" id="t-archivo" accept=".csv"></label>
+      <button type="button" id="t-borrar" disabled>Borrar sesión</button>
+    </div>
+    <p class="t-aviso" id="t-aviso" aria-live="polite"></p>
+    <div id="t-cuerpo">
+      <div class="t-resumen">
+        <div class="t-grande"><b id="t-bien">—</b><span>del tiempo con cámara, sin alertas</span></div>
+        <dl>
+          <div><dt>Tiempo registrado</dt><dd id="t-tiempo">—</dd></div>
+          <div><dt>Alertas de cámara</dt><dd id="t-veces">—</dd></div>
+          <div><dt>Tiempo en alerta</dt><dd id="t-enalerta">—</dd></div>
+          <div><dt>La que más duró</dt><dd id="t-top">—</dd></div>
+        </dl>
+      </div>
+      <p class="g-nota"><span id="t-periodo"></span>. <span id="t-fuentes"></span></p>
+      <h3>Cuándo ocurrió cada alerta</h3>
+      <div id="t-crono"></div>
+      <div class="tabla-caja" id="t-alertas"></div>
+      <h3>Motivos de mala postura</h3>
+      <div id="t-motivos"></div>
+      <h3>Métricas de la cámara</h3>
+      <p class="g-nota">El número es el promedio. La línea punteada es el límite.</p>
+      <div class="g-malla" id="t-g-camara"></div>
+      <h3>Métricas del Arduino</h3>
+      <div class="g-malla" id="t-g-arduino"></div>
+      <h3>Resumen de todas las métricas</h3>
+      <div class="tabla-caja" id="t-metricas"></div>
+      <p class="g-nota">"Tiempo fuera" cuenta cada medición fuera del rango, aunque no dure lo suficiente para sonar. El límite de brillo parte de la calibración; durante el uso se adapta a la escena.</p>
+    </div>
+    <div class="t-tip" id="t-tip" hidden></div>
+  </div>
+</section>
+
 <section id="detecta">
   <div class="ancho">
     <h2>Cinco situaciones que detecta</h2>
@@ -186,8 +228,8 @@
   <div class="ancho privacidad">
     <h2>Tu video se queda contigo</h2>
     <div>
-      <p>Las imágenes se analizan en tu navegador y se descartan al instante. No se graban ni se envían. Solo se guarda tu calibración, en este navegador.</p>
-      <button type="button" class="boton-sec" id="btn-borrar">Borrar mi calibración</button>
+      <p>Las imágenes se analizan en tu navegador y se descartan al instante. No se graban ni se envían. Solo se guardan números, en este navegador: tu calibración y las mediciones de tus últimas 20 sesiones.</p>
+      <button type="button" class="boton-sec" id="btn-borrar">Borrar mis datos</button>
       <p class="nota">Desk-Mate es un prototipo académico. No es un dispositivo médico.</p>
     </div>
   </div>
